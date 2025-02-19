@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, TextField } from '@mui/material';
+import DataGrid from './DataGrid';
 // import * as XLSX from 'xlsx';
 
 const UploadDatasetDialog = ({ open, handleClose }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [file, setFile] = useState(null);
+  const [showDataGrid, setShowDataGrid] = useState(false);
+
   const [fileData, setFileData] = useState([]);
 
   const steps = ['Upload File', 'File Details'];
 
   const handleFileUpload = (e) => {
+    debugger
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
-
+    setShowDataGrid(true);
     const reader = new FileReader();
     reader.onload = (evt) => {
     //   const bstr = evt.target.result;
@@ -36,8 +40,10 @@ const UploadDatasetDialog = ({ open, handleClose }) => {
   const renderFileUpload = () => (
     <DialogContent>
       <input type="file" accept=".xlsx,.csv" onChange={handleFileUpload} />
+       
+      {showDataGrid && <DataGrid />}
       {fileData.length > 0 && (
-        <table>
+        <><table>
           <thead>
             <tr>
               {fileData[0].map((cell, index) => (
@@ -55,6 +61,7 @@ const UploadDatasetDialog = ({ open, handleClose }) => {
             ))}
           </tbody>
         </table>
+        </>
       )}
     </DialogContent>
   );
@@ -69,7 +76,7 @@ const UploadDatasetDialog = ({ open, handleClose }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Next-Next Dialog</DialogTitle>
+      <DialogTitle>Add Dataset</DialogTitle>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
